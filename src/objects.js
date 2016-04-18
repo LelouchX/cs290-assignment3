@@ -10,12 +10,10 @@
 
 function returnObjectLiteral() {
   //your code here
-  return ({type: 'Goldfish',
-           brand: 'Pepperidge Farm',
-           flavor: 'Cheddar',
-           count: 2000}); //Modify ONLY this line
+  'use strict';
+  return {'type':'Goldfish','brand':'Pepperidge Farm','flavor':'Cheddar','count':2000};
   //end your code
-}
+};
 
 /**
 * Create a constructor function for a `MessageLog` object.
@@ -42,69 +40,35 @@ function returnObjectLiteral() {
 
 //your code here
 function MessageLog(user) {
+  'use strict';
   this.user = user;
-  this.countSent = 0;
-  this.countRcvd = 0;
-  this.sentLog = new Array(5);
-  this.rcvdLog = new Array(5);
+  this.received = new Array(0);
+  this.sent = new Array(0);
 
-  this.calculateCurrOpen = function(currCount)
-  {
-     var ii = (currCount) % 5;
-     return (ii);
-  };
-
-  this.logMessage = function(messageText, direction) {
-    /* only track valid directions */
-    if (direction >= 0 && direction <= 1)
-    {
-      /* increment counters for directions */
-      if (direction !== 1)
-      {
-        this.sentLog[this.calculateCurrOpen(this.countSent)] = messageText;
-        this.countSent++;
-      }
-      else
-      {
-        this.rcvdLog[this.calculateCurrOpen(this.countRcvd)] = messageText;
-        this.countRcvd++;
-        systemLog.totalCountRcvd(1);
-      }
-    }
-    else
-    {
-      /* what to do if bad direction? */
-      /* Decision: Nothing logged */
-    }
-    return;
-  };
-
-  this.getSentMessage = function(n) {
-    if (n >= 0 && n < 5)
-    {
-      if (this.countSent >= 5)
-      {
-        return ('' +
-              this.sentLog[this.calculateCurrOpen(this.countSent - 1 - n)]);
-      }
-      else
-      {
-        return ('' + this.sentLog[this.calculateCurrOpen(n)]);
-      }
-    }
-    else
-    {
-      return ('SOMETHING WENT TERRIBLY WRONG, MESSAGE NO LONGER IN THE LOG!');
+  this.logMessage = function (messageText, direction) {
+    if (direction === 0) {
+      this.sent.push(messageText);
+    } else if (direction === 1) {
+      this.received.push(messageText);
     }
   };
 
-  this.totalSent = function() {
-    return (this.countSent);
+  this.totalSent = function () {
+    return this.sent.length;
   };
 
-  this.totalReceived = function() {
-    return (this.countRcvd);
+  this.totalReceived = function () {
+    return this.received.length;
   };
+
+  this.getSentMessage = function (n) {
+    if (typeof n === 'number' && (n >= 0) && (n <= this.sent.length)) {
+      var messageText = this.sent[(this.sent.length - 1) - n];
+      return messageText;
+    }
+  };
+
+  return
 }
 //end your code
 
@@ -114,33 +78,13 @@ function MessageLog(user) {
 * received.
 */
 //your code here
-  MessageLog.prototype.lastReceivedMessage = function() {
-      return ('' + this.rcvdLog[this.calculateCurrOpen(this.countRcvd - 1)]);
-   };
-
-/*** Add a method to the MessageLog prototype called systemReceived().
-* This method should return the total number of messages received for all
-* instances of message logs. So if you have logs A and B, A has received
-* 3 messages, B has received 8. systemReceived() should return 11. You
-* may need to do more than simply add a method to make this functionality
-* work. **/
-  /* Define an object to hold the counter for total messages received */
-  function SystemLog() {
-    this.rcvdCounter = 0;
-    this.totalCountRcvd = function (num) {
-      this.rcvdCounter += num;
-      return (this.rcvdCounter);
-    }
+MessageLog.prototype.lastReceivedMessage = function () {
+  'use strict';
+  if (this.received.length >= 1) {
+    var messageText = this.received[0];
+    return messageText;
   }
-
-  /* Make an instance of that object */
-  systemLog = new SystemLog();
-  
-  /* add method to MessageLog prototype to get total messages received */
-  MessageLog.prototype.systemReceived = function() {
-    return (systemLog.totalCountRcvd(0));
-  };
-
+};
 //end your code
 
 /**
@@ -150,8 +94,8 @@ function MessageLog(user) {
 */
 
 //your code here
-  myLog = new MessageLog('BlackHatGuy');
-  myLog.logMessage('foo', 1);
-  myLog.logMessage('bar', 1);
-  myLog.logMessage('baz', 1);
+var myLog = new MessageLog("BlackHatGuy");
+myLog.logMessage("foo", 1);
+myLog.logMessage("bar", 1);
+myLog.logMessage("baz", 1);
 //end your code
